@@ -1,4 +1,7 @@
 # EXPERIMENT--03-SIMULATION-OF-PUSHBUTTON-AND-LED INTERFACE WITH ARM CONTROLLER AND PROTEUS 
+### NAME : Tarunika D
+### REG NO : 212223040227
+### DATE : 28.04.2025
 ## Aim: To Interface a Digital output (LED) and Digital input (Pushbutton) to ARM development board , and simulate it in Proteus 
 ## Components required: STM32 CUBE IDE, Proteus 8 simulator .
 ## Theory 
@@ -71,150 +74,109 @@ We are now at the last part of step by step guide on how to simulate STM32 proje
 
 
 ## STM 32 CUBE PROGRAM :
+
 ```
-/* USER CODE BEGIN Header / /*
+#include "main.h"
+#include<stdbool.h>
+void push_button();
+bool button_status;
 
-@file : main.c
-@brief : Main program body
-@attention
-Copyright (c) 2025 STMicroelectronics.
-All rights reserved.
-This software is licensed under terms that can be found in the LICENSE file
-in the root directory of this software component.
-If no LICENSE file comes with this software, it is provided AS-IS.
-/ / USER CODE END Header / / Includes ------------------------------------------------------------------/
-#include "main.h" #include "stdbool.h" bool button; void led_blink();
- / Private includes ----------------------------------------------------------/ / USER CODE BEGIN Includes */
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
 
-/* USER CODE END Includes */
+int main(void)
+{
+    HAL_Init();
+    SystemClock_Config();
+    MX_GPIO_Init();
+ while (1)
+  {
+	  push_button();
+  }
+  }
 
-/* Private typedef -----------------------------------------------------------/ / USER CODE BEGIN PTD */
+void push_button()
+{
+	button_status=HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+	if(button_status==0)
+	{
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET);
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET);
+	}
+}
 
-/* USER CODE END PTD */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-/* Private define ------------------------------------------------------------/ / USER CODE BEGIN PD */
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------/ / USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------/ void SystemClock_Config(void);
-static void MX_GPIO_Init(void); / USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------/ / USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-
-@brief The application entry point.
-@retval int */ int main(void) {
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
-
-/* MCU Configuration--------------------------------------------------------*/
-
-/* Reset of all peripherals, Initializes the Flash interface and the Systick. */ HAL_Init();
-
-/* USER CODE BEGIN Init */
-
-/* USER CODE END Init */
-
-/* Configure the system clock */ SystemClock_Config();
-
-/* USER CODE BEGIN SysInit */
-
-/* USER CODE END SysInit */
-
-/* Initialize all configured peripherals / MX_GPIO_Init(); / USER CODE BEGIN 2 */
-
-/* USER CODE END 2 */
-
-/* Infinite loop / / USER CODE BEGIN WHILE / while (1) { led_blink(); } } void led_blink()
- { button=HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0);
- if(button==0) { HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET); HAL_Delay(1000);
-HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET);
-HAL_Delay(1000); } else { HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET); HAL_Delay(1000);
-/ USER CODE BEGIN 3 */ } } void SystemClock_Config(void)
- { RCC_OscInitTypeDef RCC_OscInitStruct = {0}; RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-/** Configure the main internal regulator output voltage */ __HAL_RCC_PWR_CLK_ENABLE();
- __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
-
-/** Initializes the RCC Oscillators according to the specified parameters
-
-in the RCC_OscInitTypeDef structure. */ RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-RCC_OscInitStruct.HSIState = RCC_HSI_ON;
- RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT; RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
- if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) { Error_Handler(); }
-/** Initializes the CPU, AHB and APB buses clocks */ RCC_ClkInitStruct.ClockType =
-RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
- RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
- RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1; RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) { Error_Handler(); } }
-
-/**
-
-@brief GPIO Initialization Function
-@param None
-@retval None / static void MX_GPIO_Init(void) { GPIO_InitTypeDef GPIO_InitStruct = {0};
- / USER CODE BEGIN MX_GPIO_Init_1 / / USER CODE END MX_GPIO_Init_1 */
-/* GPIO Ports Clock Enable */ __HAL_RCC_GPIOA_CLK_ENABLE();
-
-/*Configure GPIO pin Output Level */ HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-
-/*Configure GPIO pin : PA0 */ GPIO_InitStruct.Pin = GPIO_PIN_0; GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
- GPIO_InitStruct.Pull = GPIO_PULLUP; HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-/*Configure GPIO pin : PA5 */ GPIO_InitStruct.Pin = GPIO_PIN_5; GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
- GPIO_InitStruct.Pull = GPIO_NOPULL; GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
- HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-/* USER CODE BEGIN MX_GPIO_Init_2 / / USER CODE END MX_GPIO_Init_2 */ }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-
-@brief This function is executed in case of error occurrence.
-@retval None / void Error_Handler(void) { / USER CODE BEGIN Error_Handler_Debug / / User can add his own
- implementation to
- report the HAL error return state / __disable_irq(); while (1) { } / USER CODE END Error_Handler_Debug */ }
-#ifdef USE_FULL_ASSERT /**
-
-@brief Reports the name of the source file and the source line number
-    where the assert_param error has occurred.
-@param file: pointer to the source file name
-@param line: assert_param error line source number
-@retval None */ void assert_failed(uint8_t file, uint32_t line) { / USER CODE BEGIN 6 / / User can add his own
-implementation to
- report the file name and line number, ex: printf("Wrong parameters value: file %s on line %d\r\n",
- file, line) / / USER CODE END 6 / } #endif / USE_FULL_ASSERT */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
+void Error_Handler(void)
+{
+  __disable_irq();
+  while (1)
+  {
+  }
+}
+#ifdef  USE_FULL_ASSERT
+void assert_failed(uint8_t *file, uint32_t line)
+{
+}
+#endif
 ```
 
 
 ## Output screen shots of proteus  :
-![image](https://github.com/user-attachments/assets/83c6b0cd-7be4-4268-9332-4a9f2813ab23)
 
+![Screenshot 2025-03-28 094608](https://github.com/user-attachments/assets/3b11799c-adf5-446c-a768-27110d44cc8a)
+
+
+![Screenshot 2025-03-28 094619](https://github.com/user-attachments/assets/0cf28192-2857-45f2-be56-ae887448fa7a)
 
 ## Proteus layout(Add pdf screen shot of circuit here)
- ![image](https://github.com/user-attachments/assets/32856b6b-28dc-4419-9be7-076d8ed5450e)
  
+![Screenshot 2025-04-28 134137](https://github.com/user-attachments/assets/4aabbd57-26cc-4e62-a7a9-f5cdbe2ad83b)
+
  
 ## Result :
 Interfacing a digital output and digital input  with ARM microcontroller are simulated in proteus and the results are verified.

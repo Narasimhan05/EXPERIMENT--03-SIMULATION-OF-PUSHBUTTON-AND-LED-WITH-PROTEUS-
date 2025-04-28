@@ -1,6 +1,6 @@
 # EXPERIMENT--03-SIMULATION-OF-PUSHBUTTON-AND-LED INTERFACE WITH ARM CONTROLLER AND PROTEUS 
-### NAME : Tarunika D
-### REG NO : 212223040227
+### NAME : NARASIMHAN S
+### REG NO : 212223230133
 ### DATE : 28.04.2025
 ## Aim: To Interface a Digital output (LED) and Digital input (Pushbutton) to ARM development board , and simulate it in Proteus 
 ## Components required: STM32 CUBE IDE, Proteus 8 simulator .
